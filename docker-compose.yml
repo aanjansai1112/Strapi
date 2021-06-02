@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=strapi
+    volumes:
+      - "mongo-db:/data/db"
+    networks:
+      - strapi
+
+  strapi:
+    image: strapi/strapi
+    container_name: strapi
+    ports:
+      - "1337:1337"
+    environment:
+      - APP_NAME=strapi-app
+      - DATABASE_CLIENT=mongo
+      - DATABASE_HOST=mongo
+      - DATABASE_PORT=27017
+      - DATABASE_NAME=strapi
+        #- ST_SERVER_ROOT_URL=/strapi
+    depends_on:
+      - "mongo"
+    volumes:
+      - "strapi-app:/srv/app"
+    links:
+      - mongo
+    networks:
+      - strapi
+ 
+volumes:
+  mongo-db:
+  strapi-app:
+
+networks:
+  strapi:
+

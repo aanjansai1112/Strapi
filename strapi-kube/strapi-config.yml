@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kinara-strapi-config
+  namespace: staging
+data:
+  databaseClient: postgres
+  databaseName: strapi
+  databaseHost: localhost
+  databasePort: "5432" 
+  databaseUsername: postgres
+  databasePassword: ********* 
+  
+

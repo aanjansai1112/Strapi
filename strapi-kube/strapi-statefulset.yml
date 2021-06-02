@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: strapi-kinara
+    tenant: strapi-kinara
+  name: strapi-kinara
+  namespace: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strapi-kinara
+      tenant: strapi-kinara
+  serviceName: strapi-kinara
+  template:
+    metadata:
+      labels:
+        app: strapi-kinara
+        tenant: strapi-kinara
+    spec:
+      containers:
+      - env:
+        - name: DATABASE_CLIENT
+          valueFrom:
+            configMapKeyRef:
+              key: databaseClient
+              name: kinara-strapi-config
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: databaseName
+              name: kinara-strapi-config
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: databaseHost
+              name: kinara-strapi-config
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: databasePort
+              name: kinara-strapi-config
+        - name: DATABASE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: databaseUsername
+              name: kinara-strapi-config
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: databasePassword
+              name: kinara-strapi-config
+        image: strapi/strapi
+        imagePullPolicy: Always
+        name: strapi-kinara
+        ports:
+        - containerPort: 1337
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /srv/app
+          name: strapi-pv-claim-kinara
+      nodeSelector:
+        autonom8.com/instance-type: general
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: strapi-pv-claim-kinara
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      dataSource: null
+      resources:
+        requests:
+          storage: 25Mi
